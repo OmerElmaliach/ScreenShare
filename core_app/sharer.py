@@ -13,11 +13,12 @@ class Sharer(object):
         self.send_image()
 
     def send_image(self):
-        while self:
+        while True:
             mss().shot(mon=1, output='screen.png')
+            cv2.imwrite('screen.png', cv2.resize(cv2.imread('screen.png'), (1080, 720)))
             with open('screen.png', 'rb') as img:
                 image_chunks = img.read(8192)
                 while image_chunks:
                     self.s.sendto(image_chunks, (self.viewer_addr, 8886))
                     image_chunks = img.read(8192)
-                self.s.sendto(b"DONE", (self.viewer_addr, 8886))
+                self.s.sendto(image_chunks, (self.viewer_addr, 8886))
